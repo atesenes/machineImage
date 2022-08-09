@@ -37,7 +37,8 @@ class ImageService
     {
         $image = $this->getImage($id);
         $count = $image->order;
-        $lists = $this->repository->reOrder($count+1,$this->repository->findMax([],'order'));
+        //Reorder pictures after deleted picture
+        $lists = $this->repository->getBetweenTwoOrder($count+1,$this->repository->findMax([],'order'));
         foreach ($lists as $list)
         {
             $this->updateOrder($list->id,$count);
@@ -46,13 +47,9 @@ class ImageService
         $this->updateOrder($id,0);
         return $this->repository->delete($id);
     }
-    public function getLikeName($name)
-    {
-        return $this->repository->whereLikeName($name);
-    }
     public function reOrder($order,$newOrder)
     {
-        //max değerden büyük order no gelirse; En sona gönder
+        //max order no < new order =>  add to the end as it moves forward(new order=max order)
         if ($this->repository->findMax([],'order') < $newOrder)
         {
             $newOrder = $this->repository->findMax([],'order');
@@ -61,19 +58,18 @@ class ImageService
         if ($order<$newOrder)
         {
             $sortStart = $order;
-            $lists = $this->repository->reOrder($order,$newOrder);
+            $lists = $this->repository->getBetweenTwoOrder($order,$newOrder);
         }
         else // new < order
         {
             $sortStart = $newOrder+1;
-            $lists = $this->repository->reOrder($newOrder,$order);
+            $lists = $this->repository->getBetweenTwoOrder($newOrder,$order);
         }
         foreach ($lists as $list) {
+            //selected image is update order
             if ($list->order == $order)
-            {
                 $this->updateOrder($list->id,$newOrder);
-            }
-            else
+            else //other images
             {
                 $this->updateOrder($list->id,$sortStart);
                 $sortStart++;

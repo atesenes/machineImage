@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\ImageController;
 
 /*
@@ -15,6 +16,10 @@ use App\Http\Controllers\ImageController;
 
 */
 Route::get('/', [ImageController::class,'index'])->name('home');
+Route::post('image/savePicture',[ImageController::class,'savePicture'])->name('image.savePicture');
 Route::post('image/reOrder',[ImageController::class,'reOrder'])->name('image.reOrder');
 Route::resource('image',ImageController::class);
 
+
+Route::get('api/images',[ApiController::class, 'index'])->name('api.images');
+Route::get('api/image/{id}',[ApiController::class, 'show'])->name('api.image');

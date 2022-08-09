@@ -78,11 +78,11 @@
                     <div class="col-lg-6">
                         <div class="input-group" style="text-align: center">
                             <input type="file" class="image" onclick="clearImageData()" accept=".jpg,.jpeg,.png">
-                            <input type="hidden" name="image" id="upload-image">
+                            <input type="hidden" name="image" value="{{$record->image}}" id="upload-image">
                         </div>
                     </div>
                     <div class="col-6" style="text-align: center">
-                        <button type="submit" class="button" id="saveButton">
+                        <button type="submit" class="button">
                             <span class="icon-material-outline-add-a-photo" style="text-align: center">
                                 UPLOAD
                                          </span>
@@ -91,8 +91,8 @@
                 </div>
             </form>
 
-            <div class="col-lg-12 small" style="text-align: center">
-                <img src="https://ismakinesi.com/assets/ismakinesi.svg" style="max-height: 500px; margin-left: 15%"
+            <div class="col-lg-12 small" style="text-align: center; margin-left: 20%">
+                <img src="{{ asset('images/'.$record->image) }}" style="max-height: 500px;"
                      alt="..." class="img-thumbnail">
             </div>
 
@@ -145,9 +145,6 @@
     var $modal = $('#modal');
     var image = document.getElementById('image');
     var cropper;
-
-    $("#saveButton").attr("disabled", true);
-    $("#saveButton").attr("title", "Please select picture first");
 
     $("body").on("change", ".image", function (e) {
         var files = e.target.files;
@@ -210,7 +207,6 @@
                             $('.img-thumbnail').attr('src', response.thumbnail_image);
                             $('#upload-image').val(response.image_path);
                             UIkit.notification({message: 'Image Uploaded'});
-                            $("#saveButton").attr("disabled", false);
                         } else {
                             UIkit.notification({message: 'Image Uploaded'})
                         }
